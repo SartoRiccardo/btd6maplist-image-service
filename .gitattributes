@@ -1,0 +1,2 @@
+bin/*.ttf filter=lfs diff=lfs merge=lfs -text
+bin/img/*.png filter=lfs diff=lfs merge=lfs -text
