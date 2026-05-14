@@ -43,20 +43,19 @@ def _evict_cache():
         os.remove(path)
 
 
-@app.get("/banner/{banner}")
+@app.get("/banner")
 async def get_banner(
-    banner: str,
-    wins: int = Query(...),
-    black_border: int = Query(...),
-    no_geraldo: int = Query(...),
-    lccs: int = Query(...),
+    banner: str = Query(...),
+    wins: int = Query(0),
+    black_border: int = Query(0),
+    no_geraldo: int = Query(0),
+    lccs: int = Query(0),
 ) -> Response:
-    url = f"https://static-api.nkstatic.com/appdocs/4/assets/opendata/{banner}"
-    cache_path = os.path.join(CACHE_DIR, hashlib.md5(url.encode()).hexdigest())
+    cache_path = os.path.join(CACHE_DIR, hashlib.md5(banner.encode()).hexdigest())
     if os.path.exists(cache_path):
         image_bytes = open(cache_path, "rb").read()
     else:
-        resp = await _http_client.get(url)
+        resp = await _http_client.get(banner)
         if resp.status_code != http.HTTPStatus.OK:
             return Response(status_code=http.HTTPStatus.BAD_REQUEST)
         image_bytes = resp.content
